@@ -28,6 +28,7 @@ nav.top a{color:var(--ink);text-decoration:none;font:600 .95rem 'Cormorant Garam
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--bg)}
 .bk{position:absolute;left:0;top:0;width:var(--bw);will-change:transform;transform-origin:50.0% 55.00000000000001%}
 .bk img{display:block;width:100%;height:auto;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.sp{position:absolute;z-index:2;left:-10%;width:120%;top:0;will-change:transform,opacity;pointer-events:none}.sp img{display:block;width:100%;height:auto}
 .copy{position:absolute;z-index:4;left:20px;right:20px;bottom:70px;text-align:center;opacity:0;will-change:opacity}
 .copy h1{font-size:clamp(2.4rem,11vw,4.4rem);color:var(--ink)}
 .copy .lab{font:600 1.15rem 'Cormorant Garamond',Georgia,serif;margin:.5rem 0 1rem;color:var(--acc)}
@@ -50,7 +51,7 @@ h2{font-size:clamp(2rem,6vw,3.2rem);margin-bottom:1.6rem}
 .fair .big{font-size:clamp(2.2rem,8vw,3.6rem)}
 .find{margin-top:2.2rem}
 footer{text-align:center;color:var(--soft);font-size:.9rem;padding:3rem 16px 6rem;border-top:1px solid var(--soft)}
-@media (prefers-reduced-motion:reduce){.hero{height:auto}.stage{position:relative;height:auto;padding:2rem 20px 7rem;min-height:100svh}.bk{position:relative;margin:0 auto 1.4rem;width:min(60vw,280px)!important;transform:none!important}.copy{position:relative;opacity:1!important;left:auto;right:auto;bottom:auto;top:auto;width:auto;transform:none!important;text-align:center}.btns{justify-content:center}.stage::after{display:none}}
+@media (prefers-reduced-motion:reduce){.hero{height:auto}.stage{position:relative;height:auto;padding:2rem 20px 7rem;min-height:100svh}.bk{position:relative;margin:0 auto 1.4rem;width:min(60vw,280px)!important;transform:none!important}.copy{position:relative;opacity:1!important;left:auto;right:auto;bottom:auto;top:auto;width:auto;transform:none!important;text-align:center}.btns{justify-content:center}.stage::after{display:none}.sp{display:none}}
 .copy h1{font-size:clamp(1.9rem,8vw,3.2rem);line-height:1.08}.copy h1,h2,.bkrow h3{letter-spacing:.04em}body{font-size:1.2rem}
 </style>
 </head>
@@ -60,6 +61,8 @@ footer{text-align:center;color:var(--soft);font-size:.9rem;padding:3rem 16px 6re
 <header class="hero">
   <div class="stage" id="stage">
     <div class="bk" id="bk" role="img" aria-label="Moonshadow&#x27;s Champion by Dianna Gunn: a lone armoured figure with a sword walking out of a bright purple and gold storm of sparks"><img src="img/champion.jpg" alt="" width="906" height="1375"></div>
+    <div class="sp" id="sp2" aria-hidden="true"><img src="img/sparks.png" alt="" width="600" height="1820"></div>
+    <div class="sp" id="sp1" aria-hidden="true"><img src="img/sparks.png" alt="" width="600" height="1820"></div>
     <div class="copy" id="copy">
       <h1>Moonshadow&#x27;s Champion</h1>
       <div class="lab">The Moonshadow Rising Duology, book two</div>
@@ -86,17 +89,21 @@ footer{text-align:center;color:var(--soft);font-size:.9rem;padding:3rem 16px 6re
 </main>
 <footer>A mockup made by Sparsh Saini for Dianna Gunn. Not affiliated, not live.</footer>
 <script>
-(()=>{const hero=document.querySelector('.hero'),stage=document.getElementById('stage'),copy=document.getElementById('copy'),bk=document.getElementById('bk');
+(()=>{const hero=document.querySelector('.hero'),stage=document.getElementById('stage'),copy=document.getElementById('copy'),bk=document.getElementById('bk'),sp1=document.getElementById('sp1'),sp2=document.getElementById('sp2');let th=0;
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
 let W,H,bw,bh,rx,ry,ht,tick=false;const cl=v=>Math.max(0,Math.min(1,v)),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 const R=0.6589,S0=2.3;
-function measure(){W=innerWidth;H=stage.clientHeight;const d=W>=900;bh=d?H*.72:Math.min(H*.58,W*.82/R);bw=bh*R;bk.style.setProperty('--bw',bw+'px');rx=d?W*.3-bw/2:W/2-bw/2;ry=d?H/2-bh/2:H*.05;ht=hero.offsetHeight-H;draw()}
+function measure(){W=innerWidth;H=stage.clientHeight;const d=W>=900;bh=d?H*.72:Math.min(H*.58,W*.82/R);bw=bh*R;bk.style.setProperty('--bw',bw+'px');rx=d?W*.3-bw/2:W/2-bw/2;ry=d?H/2-bh/2:H*.05;ht=hero.offsetHeight-H;th=W*1.2*1820/600/2;draw()}
 function draw(){tick=false;const p=cl((scrollY-hero.offsetTop)/ht);
  const z=eio(cl(p/.72));const s=S0-(S0-1)*z;
  // start deep in the cover, pull back until the whole cover sits in its place
  const fx=bw*0.5,fy=bh*0.55;
  const tx=(1-z)*(W/2-fx)+z*rx,ty=(1-z)*(H*.4-fy)+z*ry;
  bk.style.transform=`translate(${tx}px,${ty}px) scale(${s})`;
+ // rising up through the cover's own ember storm: two depths of its sparks stream up past the lens and thin out
+ const e=cl(p/.78),ee=1-Math.pow(1-e,2);
+ sp1.style.transform=`translate3d(0,${-ee*th*1.6}px,0) scale(${2.6-ee*.9})`;sp1.style.opacity=(1-cl((p-.3)/.4)).toFixed(3);
+ sp2.style.transform=`translate3d(0,${-ee*th*.75}px,0) scale(${1.6-ee*.4})`;sp2.style.opacity=(.9*(1-cl((p-.45)/.35))).toFixed(3);
  const c=cl((p-.8)/.14);copy.style.opacity=c.toFixed(3);copy.style.transform=(W>=900?'translateY(-50%) ':'')+`translateY(${(1-c)*14}px)`}
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(draw)}},{passive:true});addEventListener('resize',measure);measure()})();
 </script>
